@@ -4,48 +4,74 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.String?>
+
 <BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.databrew.cafe.controller.PosController">
-  <left>
-    <VBox spacing="8">
-      <padding>
-        <Insets top="12" right="12" bottom="12" left="12" />
-      </padding>
-      <Label text="Menu" styleClass="section-title" />
-      <ListView fx:id="menuList" />
-      <Button text="Add to Cart" onAction="#onAdd" />
-    </VBox>
-  </left>
   <center>
-    <VBox spacing="8">
+    <HBox spacing="15" alignment="CENTER">
       <padding>
-        <Insets top="12" right="12" bottom="12" left="12" />
+        <Insets top="20" right="20" bottom="20" left="20" />
       </padding>
-      <Label text="Cart" styleClass="section-title" />
-      <TableView fx:id="cartTable">
-        <columns>
-          <TableColumn text="Item" />
-          <TableColumn text="Qty" />
-          <TableColumn text="Total" />
-        </columns>
-      </TableView>
-      <HBox spacing="8">
-        <Label text="Customer" />
-        <TextField fx:id="customerField" />
-      </HBox>
-      <HBox spacing="8">
-        <Label text="Method" />
-        <ComboBox fx:id="methodCombo">
-          <items>
-            <FXCollections fx:factory="observableArrayList">
-              <String fx:value="CASH" />
-              <String fx:value="CARD" />
-              <String fx:value="MFS" />
-            </FXCollections>
-          </items>
-        </ComboBox>
-      </HBox>
-      <Label fx:id="totalLabel" styleClass="metric" />
-      <Button text="Checkout" onAction="#onCheckout" styleClass="primary-btn" />
-    </VBox>
+
+      <!-- Left panel: Menu browser -->
+      <VBox spacing="15" HBox.hgrow="ALWAYS">
+        <Label text="Menu" styleClass="section-title pos-title" alignment="CENTER" maxWidth="Infinity" style="-fx-font-size: 48px;" />
+        <TextField fx:id="searchField" promptText="Search menu items" styleClass="pos-search" />
+        <TableView fx:id="menuTable" VBox.vgrow="ALWAYS" styleClass="pos-table">
+          <columns>
+            <TableColumn fx:id="menuNameCol" text="Name" prefWidth="200" />
+            <TableColumn fx:id="menuPriceCol" text="Price" prefWidth="100" />
+            <TableColumn fx:id="menuCategoryCol" text="Type" prefWidth="140" />
+          </columns>
+        </TableView>
+        <Button text="Add to Cart" onAction="#onAdd" styleClass="primary-btn" maxWidth="Infinity" />
+      </VBox>
+
+      <!-- Right panel: Cart and checkout -->
+      <VBox spacing="15" prefWidth="420">
+        <Label text="Current Order" styleClass="section-title" />
+
+        <GridPane hgap="12" vgap="12" styleClass="pos-form-card">
+          <columnConstraints>
+            <ColumnConstraints percentWidth="40" />
+            <ColumnConstraints percentWidth="60" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints minHeight="30" />
+            <RowConstraints minHeight="30" />
+          </rowConstraints>
+          <Label text="Customer Name" styleClass="pos-form-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+          <TextField fx:id="customerField" promptText="Customer" styleClass="pos-form-field" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+          <Label text="Payment Method" styleClass="pos-form-label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+          <ComboBox fx:id="methodCombo" styleClass="pos-form-field" GridPane.rowIndex="1" GridPane.columnIndex="1">
+            <items>
+              <FXCollections fx:factory="observableArrayList">
+                <String fx:value="CASH" />
+                <String fx:value="CARD" />
+                <String fx:value="MFS" />
+              </FXCollections>
+            </items>
+          </ComboBox>
+        </GridPane>
+
+        <TableView fx:id="cartTable" VBox.vgrow="ALWAYS" styleClass="pos-table">
+          <columns>
+            <TableColumn fx:id="cartItemCol" text="Item" prefWidth="180" />
+            <TableColumn fx:id="cartQtyCol" text="Qty" prefWidth="80" />
+            <TableColumn fx:id="cartTotalCol" text="Total" prefWidth="120" />
+          </columns>
+          <placeholder>
+            <Label text="Cart is Empty" style="-fx-font-size: 18px; -fx-text-fill: #95a5a6;" />
+          </placeholder>
+        </TableView>
+
+        <VBox spacing="10">
+          <Label text="Total" styleClass="section-title" />
+          <Label fx:id="totalLabel" text="0.00" style="-fx-font-size: 24px; -fx-font-weight: 800; -fx-text-fill: #10b981;" />
+          <Button text="Checkout" onAction="#onCheckout" maxWidth="Infinity" style="-fx-background-color: linear-gradient(to right, #22c55e, #16a34a); -fx-text-fill: white; -fx-padding: 16 20; -fx-background-radius: 12; -fx-font-size: 17px; -fx-font-weight: 800;" />
+        </VBox>
+      </VBox>
+
+    </HBox>
   </center>
 </BorderPane>
