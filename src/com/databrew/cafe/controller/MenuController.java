@@ -13,7 +13,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
 import javafx.util.StringConverter;
 
 import java.sql.SQLException;
@@ -47,6 +46,10 @@ public class MenuController {
     private ComboBox<String> statusCombo;
     @FXML
     private ImageView itemImageView;
+    @FXML
+    private Button addItemButton;
+    @FXML
+    private Button updateItemButton;
 
     private final MenuDao menuDao = new MenuDao();
     private final CategoryDao categoryDao = new CategoryDao();
@@ -63,6 +66,7 @@ public class MenuController {
         setupSearch();
         loadData();
         menuTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> populateForm(newSel));
+        setFormMode(false);
     }
 
     private void wireTable() {
@@ -136,6 +140,8 @@ public class MenuController {
     private void handleRefresh() {
         loadData();
         applyFilter(searchField.getText());
+        menuTable.getSelectionModel().clearSelection();
+        setFormMode(false);
     }
 
     @FXML
@@ -149,34 +155,45 @@ public class MenuController {
         if (statusCombo != null) {
             statusCombo.getSelectionModel().selectFirst();
         }
+        menuTable.getSelectionModel().clearSelection();
+        setFormMode(false);
     }
 
     @FXML
-    private void handleSave() {
+    private void handleAddItem() {
         try {
-            MenuItem toSave = (editingSelection == null) ? new MenuItem() : editingSelection;
-            toSave.setName(itemNameField.getText());
-            toSave.setPrice(Double.parseDouble(priceField.getText()));
-            Category selectedCat = categoryCombo.getSelectionModel().getSelectedItem();
-            if (selectedCat == null) {
-                showError("Please select a category");
+            MenuItem toSave = buildItemFromForm(null);
+            if (toSave == null) {
                 return;
             }
-            toSave.setCategoryId(selectedCat.getId());
-            String status = statusCombo.getSelectionModel().getSelectedItem();
-            toSave.setActive(!"Sold Out".equalsIgnoreCase(status));
-
-            if (toSave.getId() == 0) {
-                menuDao.insert(toSave);
-            } else {
-                menuDao.update(toSave);
-            }
+            menuDao.insert(toSave);
             handleRefresh();
             handleClearForm();
         } catch (NumberFormatException ex) {
             showError("Price must be numeric");
         } catch (SQLException e) {
             showError("Save failed: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleUpdateItem() {
+        if (editingSelection == null) {
+            showError("Select an item to update");
+            return;
+        }
+        try {
+            MenuItem toSave = buildItemFromForm(editingSelection);
+            if (toSave == null) {
+                return;
+            }
+            menuDao.update(toSave);
+            handleRefresh();
+            handleClearForm();
+        } catch (NumberFormatException ex) {
+            showError("Price must be numeric");
+        } catch (SQLException e) {
+            showError("Update failed: " + e.getMessage());
         }
     }
 
@@ -233,6 +250,7 @@ public class MenuController {
             categoryCombo.getSelectionModel().select(match);
         }
         statusCombo.getSelectionModel().select(item.isActive() ? "Available" : "Sold Out");
+        setFormMode(true);
     }
 
     private String resolveCategoryName(long categoryId) {
@@ -243,6 +261,30 @@ public class MenuController {
                 .map(Category::getName)
                 .findFirst()
                 .orElse("Unknown");
+    }
+
+    private MenuItem buildItemFromForm(MenuItem base) {
+        MenuItem target = base == null ? new MenuItem() : base;
+        target.setName(itemNameField.getText());
+        Category selectedCat = categoryCombo.getSelectionModel().getSelectedItem();
+        if (selectedCat == null) {
+            showError("Please select a category");
+            return null;
+        }
+        target.setCategoryId(selectedCat.getId());
+        target.setPrice(Double.parseDouble(priceField.getText()));
+        String status = statusCombo.getSelectionModel().getSelectedItem();
+        target.setActive(!"Sold Out".equalsIgnoreCase(status));
+        return target;
+    }
+
+    private void setFormMode(boolean editing) {
+        if (addItemButton != null && updateItemButton != null) {
+            addItemButton.setVisible(!editing);
+            addItemButton.setManaged(!editing);
+            updateItemButton.setVisible(editing);
+            updateItemButton.setManaged(editing);
+        }
     }
 
     private void showError(String msg) {

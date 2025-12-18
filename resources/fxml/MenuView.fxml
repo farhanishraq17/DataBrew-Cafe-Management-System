@@ -34,13 +34,13 @@
                     <Insets top="20" right="20" bottom="20" left="20" />
                 </padding>
                 <TableView fx:id="menuTable" VBox.vgrow="ALWAYS"
-                          fixedCellSize="50.0" styleClass="table-row-cell">
+                          fixedCellSize="50.0" styleClass="menu-table">
                     <columns>
-                        <TableColumn fx:id="colId" text="Sl" prefWidth="60" />
-                        <TableColumn fx:id="colName" text="Name" prefWidth="180" />
-                        <TableColumn fx:id="colCategory" text="Type" prefWidth="140" />
-                        <TableColumn fx:id="colPrice" text="Price ($)" prefWidth="100" />
-                        <TableColumn fx:id="colStatus" text="Availability" prefWidth="120" />
+                        <TableColumn fx:id="colId" text="SL" prefWidth="60" />
+                        <TableColumn fx:id="colName" text="ITEM" prefWidth="180" />
+                        <TableColumn fx:id="colCategory" text="TYPE" prefWidth="140" />
+                        <TableColumn fx:id="colPrice" text="PRICE ($)" prefWidth="100" />
+                        <TableColumn fx:id="colStatus" text="AVAILABILITY" prefWidth="120" />
                     </columns>
                     <placeholder>
                         <Label text="No Menu Items Found"
@@ -50,61 +50,61 @@
             </VBox>
 
             <!-- Right: Editor Panel -->
-            <VBox spacing="15"
+            <VBox spacing="18"
                   style="-fx-background-color: white; -fx-background-radius: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 12, 0.2, 0, 4);">
                 <padding>
                     <Insets top="20" right="20" bottom="20" left="20" />
                 </padding>
                 <Label text="Item Details" style="-fx-font-size: 24px; -fx-font-weight: 800; -fx-text-fill: #2c3e50;" />
 
-                <!-- Image section -->
-                <VBox spacing="10" alignment="CENTER">
-                    <ImageView fx:id="itemImageView" fitWidth="150" fitHeight="150" preserveRatio="true"
+                <!-- Image card -->
+                <VBox spacing="12" alignment="CENTER"
+                      style="-fx-background-color: linear-gradient(to bottom, #f8fafc, #eef2ff); -fx-padding: 16; -fx-background-radius: 12; -fx-border-color: #e5e7eb; -fx-border-radius: 12;">
+                    <ImageView fx:id="itemImageView" fitWidth="160" fitHeight="160" preserveRatio="true"
                                style="-fx-border-color: #e5e7eb; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 6;" />
                     <Button text="Change Image" onAction="#handleChangeImage" styleClass="secondary-btn" />
                 </VBox>
 
-                <!-- Form fields -->
-                <GridPane hgap="10" vgap="12">
+                <!-- Form grid -->
+                <GridPane hgap="14" vgap="18">
                     <columnConstraints>
                         <ColumnConstraints percentWidth="35" />
                         <ColumnConstraints percentWidth="65" />
                     </columnConstraints>
 
-                          <Label text="Item Name" GridPane.rowIndex="0" GridPane.columnIndex="0"
-                              style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;" />
-                          <TextField fx:id="itemNameField" GridPane.rowIndex="0" GridPane.columnIndex="1"
-                               style="-fx-text-fill: #2c3e50; -fx-font-size: 14px;" />
+                    <Label text="Item Name" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                           styleClass="form-label" />
+                    <TextField fx:id="itemNameField" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                               styleClass="form-control" />
 
-                          <Label text="Category" GridPane.rowIndex="1" GridPane.columnIndex="0"
-                              style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;" />
-                          <ComboBox fx:id="categoryCombo" GridPane.rowIndex="1" GridPane.columnIndex="1"
-                              style="-fx-text-fill: #2c3e50; -fx-font-size: 14px;" />
+                    <Label text="Category" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                           styleClass="form-label" />
+                    <ComboBox fx:id="categoryCombo" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                              styleClass="form-control" />
 
-                          <Label text="Price" GridPane.rowIndex="2" GridPane.columnIndex="0"
-                              style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;" />
-                          <TextField fx:id="priceField" GridPane.rowIndex="2" GridPane.columnIndex="1"
-                               style="-fx-text-fill: #2c3e50; -fx-font-size: 14px;" />
+                    <Label text="Price" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                           styleClass="form-label" />
+                    <TextField fx:id="priceField" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                               styleClass="form-control" />
 
-                          <Label text="Status" GridPane.rowIndex="3" GridPane.columnIndex="0"
-                              style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;" />
-                          <ComboBox fx:id="statusCombo" GridPane.rowIndex="3" GridPane.columnIndex="1"
-                              style="-fx-text-fill: #2c3e50; -fx-font-size: 14px;" />
+                    <Label text="Status" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                           styleClass="form-label" />
+                    <ComboBox fx:id="statusCombo" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                              styleClass="form-control" />
                 </GridPane>
 
-                <!-- Actions -->
-                <HBox spacing="10">
-                    <Button text="Clear Form" onAction="#handleClearForm"
-                            style="-fx-background-color: #e5e7eb; -fx-text-fill: #0f172a; -fx-background-radius: 10; -fx-padding: 10 16;" />
-                    <Region HBox.hgrow="ALWAYS" />
-                    <Button text="Save Item" onAction="#handleSave" styleClass="primary-btn" />
-                </HBox>
+                <Region VBox.vgrow="ALWAYS" />
 
-                <HBox spacing="10">
-                    <Region HBox.hgrow="ALWAYS" />
-                    <Button text="DELETE ITEM" onAction="#handleDelete"
-                            prefHeight="40.0" prefWidth="120.0"
-                            style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" />
+                <!-- Footer actions -->
+                <HBox spacing="12" alignment="CENTER" styleClass="btn-bar">
+                    <Button text="Clear Form" onAction="#handleClearForm" styleClass="btn-ghost" prefHeight="45"
+                            HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                    <Button fx:id="addItemButton" text="Add Item" onAction="#handleAddItem" styleClass="btn-primary" prefHeight="45"
+                            HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                    <Button fx:id="updateItemButton" text="Update Item" onAction="#handleUpdateItem" styleClass="btn-primary" prefHeight="45"
+                            visible="false" managed="false" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                    <Button text="Delete Item" onAction="#handleDelete" styleClass="btn-danger" prefHeight="45"
+                            HBox.hgrow="ALWAYS" maxWidth="Infinity" />
                 </HBox>
             </VBox>
         </SplitPane>
