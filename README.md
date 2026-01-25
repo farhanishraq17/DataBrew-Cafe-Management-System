@@ -68,6 +68,203 @@ The system follows a layered **Model–View–Controller (MVC)** architecture wi
 
 ---
 
+## 📁 Project Structure
+
+```
+├── src/
+│   ├── App.java                          # JavaFX entry point
+│   └── com/databrew/cafe/
+│       ├── controller/                   # 15 FXML controllers
+│       │   ├── AuditLogController.java
+│       │   ├── DashboardController.java
+│       │   ├── DiscountController.java
+│       │   ├── EmployeeController.java
+│       │   ├── InventoryController.java
+│       │   ├── LoginController.java
+│       │   ├── MenuController.java
+│       │   ├── OrderHistoryController.java
+│       │   ├── PosController.java
+│       │   ├── PurchaseController.java
+│       │   ├── ReportsController.java
+│       │   ├── ShiftManagementController.java
+│       │   ├── SupplierController.java
+│       │   ├── TaxController.java
+│       │   └── UserManagementController.java
+│       ├── dao/                          # 16 DAO classes
+│       │   ├── AttendanceDao.java
+│       │   ├── AuditLogDao.java
+│       │   ├── CategoryDao.java
+│       │   ├── DiscountDao.java
+│       │   ├── EmployeeDao.java
+│       │   ├── InventoryDao.java
+│       │   ├── InvoiceDao.java
+│       │   ├── MenuDao.java
+│       │   ├── OrderDao.java
+│       │   ├── PaymentDao.java
+│       │   ├── PurchaseDao.java
+│       │   ├── RoleDao.java
+│       │   ├── ShiftDao.java
+│       │   ├── SupplierDao.java
+│       │   ├── TaxDao.java
+│       │   └── UserDao.java
+│       ├── model/                        # 18 model classes
+│       │   ├── Attendance.java
+│       │   ├── AuditLog.java
+│       │   ├── Category.java
+│       │   ├── Discount.java
+│       │   ├── Employee.java
+│       │   ├── Ingredient.java
+│       │   ├── InventoryItem.java
+│       │   ├── Invoice.java
+│       │   ├── MenuItem.java
+│       │   ├── Order.java
+│       │   ├── OrderItem.java
+│       │   ├── Payment.java
+│       │   ├── Purchase.java
+│       │   ├── Role.java
+│       │   ├── Shift.java
+│       │   ├── Supplier.java
+│       │   ├── Tax.java
+│       │   └── User.java
+│       ├── service/                      # 3 Service classes
+│       │   ├── AuthService.java          # Authentication logic
+│       │   ├── InventoryService.java     # Stock operations
+│       │   └── OrderService.java         # Order + payment transactions
+│       └── util/                         # 2 Utility classes
+│           ├── DBConnection.java         # JDBC connection factory
+│           └── PasswordUtil.java         # SHA-256 hashing
+├── resources/
+│   ├── schema.sql                        # Core schema + functions + procedures + triggers
+│   ├── extend_schema.sql                 # Views, additional procedures, indexes
+│   ├── fix_trigger.sql                   # Fixed inventory trigger + junction table
+│   ├── restore_trigger.sql               # Payment trigger restore
+│   ├── seed_data.sql                     # Bulk seed data
+│   ├── seed_users.sql / seed_remaining.sql
+│   ├── css/theme.css                     # JavaFX stylesheet
+│   └── fxml/                             # 15 FXML view files
+│       ├── AuditLogView.fxml
+│       ├── DashboardView.fxml
+│       ├── DiscountView.fxml
+│       ├── EmployeeView.fxml
+│       ├── InventoryView.fxml
+│       ├── LoginView.fxml
+│       ├── MenuView.fxml
+│       ├── OrderHistoryView.fxml
+│       ├── PosView.fxml
+│       ├── PurchaseView.fxml
+│       ├── ReportsView.fxml
+│       ├── ShiftManagementView.fxml
+│       ├── SupplierView.fxml
+│       ├── TaxView.fxml
+│       └── UserManagementView.fxml
+├── lib/
+│   └── mysql-connector-j-9.1.0.jar
+└── bin/                                  # Compiled classes
+```
+
+---
+
+## 🏗️ Architecture
+
+### Layered Design
+
+```
+┌──────────────────┐
+│   FXML Views     │  ← 15 .fxml files + CSS theme
+├──────────────────┤
+│  Controllers     │  ← 15 JavaFX controllers (UI event handling)
+├──────────────────┤
+│   Services       │  ← 3 service classes (business logic, transactions)
+├──────────────────┤
+│     DAOs         │  ← 16 DAO classes (raw JDBC SQL operations)
+├──────────────────┤
+│    Utilities     │  ← DBConnection (JDBC), PasswordUtil (SHA-256)
+├──────────────────┤
+│  MySQL 8.0+      │  ← 20 tables, 3 functions, 8 procedures, 4 triggers, 7 views
+└──────────────────┘
+```
+
+### Data Flow: Order Checkout
+
+```
+PosController.onCheckout()
+  │
+  ├─ OrderService.createOrderWithItems(order, items)
+  │    │  conn.setAutoCommit(false)
+  │    ├─ OrderDao.insertOrder(conn, order)         → INSERT INTO orders
+  │    ├─ OrderDao.insertItems(conn, orderId, items) → INSERT INTO order_items (batch)
+  │    │    └─ [TRIGGER] trg_order_items_after_insert → UPDATE inventory (deduct stock)
+  │    │         └─ [TRIGGER] trg_inventory_after_update → INSERT INTO audit_logs
+  │    ├─ CallableStatement: create_order_procedure  → Compute subtotal/discount/tax/total
+  │    │    ├─ get_total_order_price()
+  │    │    ├─ calculate_discount()
+  │    │    └─ calculate_tax()
+  │    └─ conn.commit()
+  │
+  ├─ OrderService.recordPaymentAndInvoice(orderId, total, method)
+  │    │  conn.setAutoCommit(false)
+  │    ├─ PaymentDao.insert(conn, payment)           → INSERT INTO payments
+  │    │    └─ [TRIGGER] trg_payments_after_insert   → UPDATE orders SET status='PAID'
+  │    │         └─ INSERT INTO audit_logs
+  │    ├─ CallableStatement: generate_invoice_procedure → INSERT INTO invoices
+  │    └─ conn.commit()
+  │
+  └─ showReceiptDialog()
+```
+
+### JDBC Connection Utility
+
+```java
+public final class DBConnection {
+    private static final String URL  = "jdbc:mysql://localhost:3306/cafedb?useSSL=false&serverTimezone=UTC";
+    private static final String USER = "root";
+    private static final String PASSWORD = "MyNewPass";
+
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("MySQL driver not found", e);
+        }
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
+}
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- **Java JDK 17+**
+- **JavaFX SDK 24**
+- **MySQL 8.0+**
+
+### Database Setup
+```bash
+mysql -u root -p < resources/schema.sql
+mysql -u root -p cafedb < resources/fix_trigger.sql
+mysql -u root -p cafedb < resources/extend_schema.sql
+mysql -u root -p cafedb < resources/seed_users.sql
+mysql -u root -p cafedb < resources/seed_data.sql
+mysql -u root -p cafedb < resources/seed_remaining.sql
+```
+
+### Compile & Run
+```powershell
+# Compile
+javac --module-path "C:\Java\javafx-sdk-24.0.2\lib" --add-modules javafx.controls,javafx.fxml -d bin -cp "lib\mysql-connector-j-9.1.0.jar" (Get-ChildItem -Path src -Recurse -Filter *.java | ForEach-Object { $_.FullName })
+
+# Run
+java --module-path "C:\Java\javafx-sdk-24.0.2\lib" --add-modules javafx.controls,javafx.fxml --enable-native-access=javafx.graphics -cp "$PWD\bin;$PWD\resources;$PWD\lib\mysql-connector-j-9.1.0.jar" com.databrew.cafe.App
+```
+
+> **Note:** Update the JavaFX SDK path to match your local installation.
+---
+
 ## ✨ Features
 
 The application provides **17 integrated modules** that cover every aspect of daily café operations. Each feature is described in detail below, including its architecture, database interactions, and key implementation highlights.
@@ -2269,203 +2466,6 @@ ORDER BY o.created_at DESC;
 
 ---
 
-## 📁 Project Structure
-
-```
-├── src/
-│   ├── App.java                          # JavaFX entry point
-│   └── com/databrew/cafe/
-│       ├── controller/                   # 15 FXML controllers
-│       │   ├── AuditLogController.java
-│       │   ├── DashboardController.java
-│       │   ├── DiscountController.java
-│       │   ├── EmployeeController.java
-│       │   ├── InventoryController.java
-│       │   ├── LoginController.java
-│       │   ├── MenuController.java
-│       │   ├── OrderHistoryController.java
-│       │   ├── PosController.java
-│       │   ├── PurchaseController.java
-│       │   ├── ReportsController.java
-│       │   ├── ShiftManagementController.java
-│       │   ├── SupplierController.java
-│       │   ├── TaxController.java
-│       │   └── UserManagementController.java
-│       ├── dao/                          # 16 DAO classes
-│       │   ├── AttendanceDao.java
-│       │   ├── AuditLogDao.java
-│       │   ├── CategoryDao.java
-│       │   ├── DiscountDao.java
-│       │   ├── EmployeeDao.java
-│       │   ├── InventoryDao.java
-│       │   ├── InvoiceDao.java
-│       │   ├── MenuDao.java
-│       │   ├── OrderDao.java
-│       │   ├── PaymentDao.java
-│       │   ├── PurchaseDao.java
-│       │   ├── RoleDao.java
-│       │   ├── ShiftDao.java
-│       │   ├── SupplierDao.java
-│       │   ├── TaxDao.java
-│       │   └── UserDao.java
-│       ├── model/                        # 18 model classes
-│       │   ├── Attendance.java
-│       │   ├── AuditLog.java
-│       │   ├── Category.java
-│       │   ├── Discount.java
-│       │   ├── Employee.java
-│       │   ├── Ingredient.java
-│       │   ├── InventoryItem.java
-│       │   ├── Invoice.java
-│       │   ├── MenuItem.java
-│       │   ├── Order.java
-│       │   ├── OrderItem.java
-│       │   ├── Payment.java
-│       │   ├── Purchase.java
-│       │   ├── Role.java
-│       │   ├── Shift.java
-│       │   ├── Supplier.java
-│       │   ├── Tax.java
-│       │   └── User.java
-│       ├── service/                      # 3 Service classes
-│       │   ├── AuthService.java          # Authentication logic
-│       │   ├── InventoryService.java     # Stock operations
-│       │   └── OrderService.java         # Order + payment transactions
-│       └── util/                         # 2 Utility classes
-│           ├── DBConnection.java         # JDBC connection factory
-│           └── PasswordUtil.java         # SHA-256 hashing
-├── resources/
-│   ├── schema.sql                        # Core schema + functions + procedures + triggers
-│   ├── extend_schema.sql                 # Views, additional procedures, indexes
-│   ├── fix_trigger.sql                   # Fixed inventory trigger + junction table
-│   ├── restore_trigger.sql               # Payment trigger restore
-│   ├── seed_data.sql                     # Bulk seed data
-│   ├── seed_users.sql / seed_remaining.sql
-│   ├── css/theme.css                     # JavaFX stylesheet
-│   └── fxml/                             # 15 FXML view files
-│       ├── AuditLogView.fxml
-│       ├── DashboardView.fxml
-│       ├── DiscountView.fxml
-│       ├── EmployeeView.fxml
-│       ├── InventoryView.fxml
-│       ├── LoginView.fxml
-│       ├── MenuView.fxml
-│       ├── OrderHistoryView.fxml
-│       ├── PosView.fxml
-│       ├── PurchaseView.fxml
-│       ├── ReportsView.fxml
-│       ├── ShiftManagementView.fxml
-│       ├── SupplierView.fxml
-│       ├── TaxView.fxml
-│       └── UserManagementView.fxml
-├── lib/
-│   └── mysql-connector-j-9.1.0.jar
-└── bin/                                  # Compiled classes
-```
-
----
-
-## 🏗️ Architecture
-
-### Layered Design
-
-```
-┌──────────────────┐
-│   FXML Views     │  ← 15 .fxml files + CSS theme
-├──────────────────┤
-│  Controllers     │  ← 15 JavaFX controllers (UI event handling)
-├──────────────────┤
-│   Services       │  ← 3 service classes (business logic, transactions)
-├──────────────────┤
-│     DAOs         │  ← 16 DAO classes (raw JDBC SQL operations)
-├──────────────────┤
-│    Utilities     │  ← DBConnection (JDBC), PasswordUtil (SHA-256)
-├──────────────────┤
-│  MySQL 8.0+      │  ← 20 tables, 3 functions, 8 procedures, 4 triggers, 7 views
-└──────────────────┘
-```
-
-### Data Flow: Order Checkout
-
-```
-PosController.onCheckout()
-  │
-  ├─ OrderService.createOrderWithItems(order, items)
-  │    │  conn.setAutoCommit(false)
-  │    ├─ OrderDao.insertOrder(conn, order)         → INSERT INTO orders
-  │    ├─ OrderDao.insertItems(conn, orderId, items) → INSERT INTO order_items (batch)
-  │    │    └─ [TRIGGER] trg_order_items_after_insert → UPDATE inventory (deduct stock)
-  │    │         └─ [TRIGGER] trg_inventory_after_update → INSERT INTO audit_logs
-  │    ├─ CallableStatement: create_order_procedure  → Compute subtotal/discount/tax/total
-  │    │    ├─ get_total_order_price()
-  │    │    ├─ calculate_discount()
-  │    │    └─ calculate_tax()
-  │    └─ conn.commit()
-  │
-  ├─ OrderService.recordPaymentAndInvoice(orderId, total, method)
-  │    │  conn.setAutoCommit(false)
-  │    ├─ PaymentDao.insert(conn, payment)           → INSERT INTO payments
-  │    │    └─ [TRIGGER] trg_payments_after_insert   → UPDATE orders SET status='PAID'
-  │    │         └─ INSERT INTO audit_logs
-  │    ├─ CallableStatement: generate_invoice_procedure → INSERT INTO invoices
-  │    └─ conn.commit()
-  │
-  └─ showReceiptDialog()
-```
-
-### JDBC Connection Utility
-
-```java
-public final class DBConnection {
-    private static final String URL  = "jdbc:mysql://localhost:3306/cafedb?useSSL=false&serverTimezone=UTC";
-    private static final String USER = "root";
-    private static final String PASSWORD = "MyNewPass";
-
-    static {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("MySQL driver not found", e);
-        }
-    }
-
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
-    }
-}
-```
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- **Java JDK 17+**
-- **JavaFX SDK 24**
-- **MySQL 8.0+**
-
-### Database Setup
-```bash
-mysql -u root -p < resources/schema.sql
-mysql -u root -p cafedb < resources/fix_trigger.sql
-mysql -u root -p cafedb < resources/extend_schema.sql
-mysql -u root -p cafedb < resources/seed_users.sql
-mysql -u root -p cafedb < resources/seed_data.sql
-mysql -u root -p cafedb < resources/seed_remaining.sql
-```
-
-### Compile & Run
-```powershell
-# Compile
-javac --module-path "C:\Java\javafx-sdk-24.0.2\lib" --add-modules javafx.controls,javafx.fxml -d bin -cp "lib\mysql-connector-j-9.1.0.jar" (Get-ChildItem -Path src -Recurse -Filter *.java | ForEach-Object { $_.FullName })
-
-# Run
-java --module-path "C:\Java\javafx-sdk-24.0.2\lib" --add-modules javafx.controls,javafx.fxml --enable-native-access=javafx.graphics -cp "$PWD\bin;$PWD\resources;$PWD\lib\mysql-connector-j-9.1.0.jar" com.databrew.cafe.App
-```
-
-> **Note:** Update the JavaFX SDK path to match your local installation.
-
----
 
 
 
