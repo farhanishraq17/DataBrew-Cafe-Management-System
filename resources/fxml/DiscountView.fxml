@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.databrew.cafe.controller.DiscountController">
+  <center>
+    <SplitPane dividerPositions="0.62">
+      <VBox spacing="12" SplitPane.resizableWithParent="true">
+        <padding><Insets top="16" right="16" bottom="16" left="16" /></padding>
+        <Label text="Discounts" styleClass="section-title" />
+        <TableView fx:id="discountTable" VBox.vgrow="ALWAYS" fixedCellSize="44.0" styleClass="menu-table">
+          <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="60" />
+            <TableColumn fx:id="colName" text="Name" prefWidth="180" />
+            <TableColumn fx:id="colType" text="Type" prefWidth="100" />
+            <TableColumn fx:id="colValue" text="Value" prefWidth="100" />
+            <TableColumn fx:id="colApplies" text="Applies To" prefWidth="140" />
+          </columns>
+          <placeholder><Label text="No discounts configured" /></placeholder>
+        </TableView>
+      </VBox>
+
+      <VBox spacing="14" style="-fx-background-color: white; -fx-padding: 16; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.2, 0, 4);">
+        <Label text="Discount Details" styleClass="section-title" />
+        <GridPane hgap="14" vgap="14">
+          <columnConstraints>
+            <ColumnConstraints percentWidth="35" />
+            <ColumnConstraints percentWidth="65" />
+          </columnConstraints>
+          <Label text="Name" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="form-label" />
+          <TextField fx:id="nameField" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="form-control" promptText="Discount name" />
+          <Label text="Type" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="form-label" />
+          <ComboBox fx:id="typeCombo" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="form-control" maxWidth="Infinity" />
+          <Label text="Value" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="form-label" />
+          <TextField fx:id="valueField" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="form-control" promptText="Percentage or flat amount" />
+          <Label text="Applies To" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="form-label" />
+          <ComboBox fx:id="appliesToCombo" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="form-control" maxWidth="Infinity" />
+        </GridPane>
+        <Region VBox.vgrow="ALWAYS" />
+        <HBox spacing="10" alignment="CENTER" styleClass="actions-bar">
+          <Button text="Clear" onAction="#onClear" styleClass="btn-clear-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+          <Button text="Add" onAction="#onAdd" styleClass="btn-primary-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+          <Button text="Update" onAction="#onUpdateAction" styleClass="btn-primary-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: linear-gradient(to right, #f59e0b, #d97706);" />
+          <Button text="Remove" onAction="#onDelete" styleClass="btn-danger-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+        </HBox>
+      </VBox>
+    </SplitPane>
+  </center>
+</BorderPane>

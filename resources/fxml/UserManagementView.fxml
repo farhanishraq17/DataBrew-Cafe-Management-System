@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.databrew.cafe.controller.UserManagementController">
+  <center>
+    <SplitPane dividerPositions="0.58">
+      <!-- Left: Users table -->
+      <VBox spacing="12" SplitPane.resizableWithParent="true">
+        <padding><Insets top="16" right="16" bottom="16" left="16" /></padding>
+        <Label text="User Management" styleClass="section-title" />
+        <HBox spacing="10" alignment="CENTER_LEFT">
+           <TextField fx:id="searchField" promptText="Search users..." prefWidth="260" styleClass="form-control" />
+           <Button text="Search" onAction="#onSearch" styleClass="btn-primary-strong" />
+           <Button text="Show All" onAction="#onShowAll" styleClass="btn-clear-strong" />
+        </HBox>
+        <TableView fx:id="userTable" VBox.vgrow="ALWAYS" fixedCellSize="44.0" styleClass="menu-table">
+          <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="50" />
+            <TableColumn fx:id="colUsername" text="Username" prefWidth="130" />
+            <TableColumn fx:id="colFullName" text="Full Name" prefWidth="160" />
+            <TableColumn fx:id="colEmail" text="Email" prefWidth="200" />
+            <TableColumn fx:id="colRoles" text="Roles" prefWidth="180" />
+            <TableColumn fx:id="colActive" text="Active" prefWidth="70" />
+          </columns>
+          <placeholder><Label text="No users found" /></placeholder>
+        </TableView>
+      </VBox>
+
+      <!-- Right: Form -->
+      <VBox spacing="14" style="-fx-background-color: white; -fx-padding: 16; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.2, 0, 4);">
+        <Label text="User Details" styleClass="section-title" />
+        <GridPane hgap="14" vgap="14">
+          <columnConstraints>
+            <ColumnConstraints percentWidth="30" />
+            <ColumnConstraints percentWidth="70" />
+          </columnConstraints>
+          <Label text="Username" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="form-label" />
+          <TextField fx:id="usernameField" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="form-control" promptText="Username" />
+
+          <Label text="Full Name" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="form-label" />
+          <TextField fx:id="fullNameField" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="form-control" promptText="Full name" />
+
+          <Label text="Email" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="form-label" />
+          <TextField fx:id="emailField" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="form-control" promptText="Email" />
+
+          <Label text="Password" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="form-label" />
+          <PasswordField fx:id="passwordField" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="form-control" promptText="New / Reset password" />
+
+          <Label text="Active" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="form-label" />
+          <CheckBox fx:id="activeCheck" GridPane.rowIndex="4" GridPane.columnIndex="1" selected="true" text="Account active" />
+
+          <Label text="Roles" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="form-label" />
+          <VBox fx:id="rolesBox" spacing="6" GridPane.rowIndex="5" GridPane.columnIndex="1">
+            <!-- CheckBoxes for each role will be added dynamically -->
+          </VBox>
+        </GridPane>
+
+        <Region VBox.vgrow="ALWAYS" />
+
+        <HBox spacing="10" alignment="CENTER" styleClass="actions-bar">
+          <Button text="Clear" onAction="#onClear" styleClass="btn-clear-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+          <Button text="Add" onAction="#onAdd" styleClass="btn-primary-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+          <Button text="Update" onAction="#onUpdate" styleClass="btn-primary-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: linear-gradient(to right, #f59e0b, #d97706);" />
+          <Button text="Reset Password" onAction="#onResetPassword" styleClass="btn-primary-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: linear-gradient(to right, #8b5cf6, #7c3aed);" />
+          <Button text="Remove" onAction="#onDelete" styleClass="btn-danger-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+        </HBox>
+      </VBox>
+    </SplitPane>
+  </center>
+</BorderPane>

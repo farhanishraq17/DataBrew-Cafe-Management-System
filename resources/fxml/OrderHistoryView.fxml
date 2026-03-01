@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.databrew.cafe.controller.OrderHistoryController">
+  <center>
+    <VBox spacing="12">
+      <padding><Insets top="16" right="16" bottom="16" left="16" /></padding>
+      <Label text="Order History" styleClass="section-title" />
+
+      <!-- Filters -->
+      <HBox spacing="12" alignment="CENTER_LEFT">
+        <Label text="From:" styleClass="form-label" />
+        <DatePicker fx:id="fromDate" styleClass="form-control" prefWidth="160" />
+        <Label text="To:" styleClass="form-label" />
+        <DatePicker fx:id="toDate" styleClass="form-control" prefWidth="160" />
+        <ComboBox fx:id="statusCombo" styleClass="form-control" promptText="Status" prefWidth="140" />
+        <TextField fx:id="searchField" promptText="Search customer..." styleClass="form-control" prefWidth="180" />
+        <Button text="Filter" onAction="#onFilter" styleClass="btn-primary-strong" prefHeight="40" />
+        <Button text="Reset" onAction="#onReset" styleClass="btn-clear-strong" prefHeight="40" />
+        <Pane HBox.hgrow="ALWAYS" />
+        <Button text="Cancel Order" onAction="#onCancel" styleClass="btn-danger-strong" prefHeight="40" />
+      </HBox>
+
+      <!-- Orders table -->
+      <TableView fx:id="orderTable" VBox.vgrow="ALWAYS" fixedCellSize="44.0" styleClass="menu-table">
+        <columns>
+          <TableColumn fx:id="colId" text="ID" prefWidth="60" />
+          <TableColumn fx:id="colCustomer" text="Customer" prefWidth="140" />
+          <TableColumn fx:id="colType" text="Type" prefWidth="90" />
+          <TableColumn fx:id="colStatus" text="Status" prefWidth="100" />
+          <TableColumn fx:id="colSubtotal" text="Subtotal" prefWidth="95" />
+          <TableColumn fx:id="colDiscount" text="Discount" prefWidth="85" />
+          <TableColumn fx:id="colTax" text="Tax" prefWidth="75" />
+          <TableColumn fx:id="colTotal" text="Total" prefWidth="95" />
+          <TableColumn fx:id="colPayment" text="Payment" prefWidth="85" />
+          <TableColumn fx:id="colInvoice" text="Invoice #" prefWidth="120" />
+          <TableColumn fx:id="colDate" text="Date" prefWidth="155" />
+        </columns>
+        <placeholder><Label text="No orders found" /></placeholder>
+      </TableView>
+
+      <!-- Order items detail -->
+      <Label text="Items in Selected Order" styleClass="section-title" />
+      <TableView fx:id="itemsTable" prefHeight="180" fixedCellSize="38.0" styleClass="menu-table">
+        <columns>
+          <TableColumn fx:id="colItemName" text="Item" prefWidth="240" />
+          <TableColumn fx:id="colItemQty" text="Qty" prefWidth="70" />
+          <TableColumn fx:id="colItemPrice" text="Unit Price" prefWidth="110" />
+          <TableColumn fx:id="colItemTotal" text="Line Total" prefWidth="110" />
+        </columns>
+        <placeholder><Label text="Select an order above" /></placeholder>
+      </TableView>
+    </VBox>
+  </center>
+</BorderPane>

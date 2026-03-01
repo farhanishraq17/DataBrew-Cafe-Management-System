@@ -57,8 +57,9 @@
 
         <HBox spacing="10" alignment="CENTER" styleClass="actions-bar">
           <Button text="Clear" onAction="#onClear" styleClass="btn-clear-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
-          <Button text="Add / Update" onAction="#onSave" styleClass="btn-primary-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
-          <Button text="Delete" onAction="#onDelete" styleClass="btn-danger-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+          <Button text="Add" onAction="#onAdd" styleClass="btn-primary-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+          <Button text="Update" onAction="#onUpdateAction" styleClass="btn-primary-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: linear-gradient(to right, #f59e0b, #d97706);" />
+          <Button text="Remove" onAction="#onDelete" styleClass="btn-danger-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
         </HBox>
       </VBox>
     </SplitPane>

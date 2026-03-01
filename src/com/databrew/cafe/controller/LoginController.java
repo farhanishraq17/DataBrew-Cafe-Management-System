@@ -41,6 +41,7 @@ public class LoginController {
             stage.setScene(scene);
             stage.setTitle("DataBrew Cafe Dashboard");
         } catch (Exception e) {
+            e.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "Login failed: " + e.getMessage()).showAndWait();
         }
     }

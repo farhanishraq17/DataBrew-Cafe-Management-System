@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.databrew.cafe.controller.AuditLogController">
+  <center>
+    <VBox spacing="12">
+      <padding><Insets top="16" right="16" bottom="16" left="16" /></padding>
+      <Label text="Audit Logs" styleClass="section-title" />
+      <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Search logs..." styleClass="form-control" HBox.hgrow="ALWAYS" />
+        <Label text="From:" styleClass="form-label" />
+        <DatePicker fx:id="fromDate" styleClass="form-control" />
+        <Label text="To:" styleClass="form-label" />
+        <DatePicker fx:id="toDate" styleClass="form-control" />
+        <Button text="Filter" onAction="#onFilter" styleClass="btn-primary-strong" />
+        <Button text="Reset" onAction="#onReset" styleClass="btn-clear-strong" />
+      </HBox>
+      <TableView fx:id="auditTable" VBox.vgrow="ALWAYS" fixedCellSize="44.0" styleClass="menu-table">
+        <columns>
+          <TableColumn fx:id="colId" text="ID" prefWidth="60" />
+          <TableColumn fx:id="colTimestamp" text="Timestamp" prefWidth="170" />
+          <TableColumn fx:id="colUser" text="User" prefWidth="120" />
+          <TableColumn fx:id="colAction" text="Action" prefWidth="150" />
+          <TableColumn fx:id="colEntity" text="Entity" prefWidth="120" />
+          <TableColumn fx:id="colEntityId" text="Entity ID" prefWidth="80" />
+          <TableColumn fx:id="colDetails" text="Details" prefWidth="300" />
+        </columns>
+        <placeholder><Label text="No audit logs found" /></placeholder>
+      </TableView>
+    </VBox>
+  </center>
+</BorderPane>

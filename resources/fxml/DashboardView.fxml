@@ -3,6 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -29,6 +32,8 @@
    </top>
 
    <left>
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                  styleClass="sidebar-scroll">
       <VBox spacing="18" prefWidth="240" styleClass="sidebar">
          <padding>
             <Insets top="24" right="18" bottom="24" left="18" />
@@ -37,22 +42,100 @@
             <Label text="Dashboard" styleClass="sidebar-title" maxWidth="Infinity" />
          </HBox>
 
+          <Button text="Dashboard Home" maxWidth="Infinity" onAction="#handleGoToDashboard" styleClass="sidebar-btn" />
           <Button text="POS / Orders" maxWidth="Infinity" onAction="#handleGoToPOS" styleClass="sidebar-btn" />
           <Button text="Menu Management" maxWidth="Infinity" onAction="#handleGoToMenu" styleClass="sidebar-btn" />
           <Button text="Employees" maxWidth="Infinity" onAction="#handleGoToEmployees" styleClass="sidebar-btn" />
           <Button text="Inventory" maxWidth="Infinity" onAction="#handleGoToInventory" styleClass="sidebar-btn" />
+          <Button text="Suppliers" maxWidth="Infinity" onAction="#handleGoToSuppliers" styleClass="sidebar-btn" />
+          <Button text="Purchases" maxWidth="Infinity" onAction="#handleGoToPurchases" styleClass="sidebar-btn" />
+          <Button text="Discounts" maxWidth="Infinity" onAction="#handleGoToDiscounts" styleClass="sidebar-btn" />
+          <Button text="Taxes" maxWidth="Infinity" onAction="#handleGoToTaxes" styleClass="sidebar-btn" />
+          <Button text="Order History" maxWidth="Infinity" onAction="#handleGoToOrderHistory" styleClass="sidebar-btn" />
+          <Button text="Reports" maxWidth="Infinity" onAction="#handleGoToReports" styleClass="sidebar-btn" />
+          <Button text="Audit Logs" maxWidth="Infinity" onAction="#handleGoToAuditLogs" styleClass="sidebar-btn" />
+          <Button text="User Management" maxWidth="Infinity" onAction="#handleGoToUserManagement" styleClass="sidebar-btn" />
+          <Button text="Shifts &amp; Attendance" maxWidth="Infinity" onAction="#handleGoToShiftManagement" styleClass="sidebar-btn" />
 
           <Pane VBox.vgrow="ALWAYS" />
 
           <Button text="Logout" maxWidth="Infinity" onAction="#handleLogout" styleClass="sidebar-btn danger"
              style="-fx-background-color: linear-gradient(to right, #f87171, #dc2626); -fx-text-fill: white; -fx-alignment: center; -fx-padding: 18 26; -fx-font-size: 18px; -fx-font-weight: 900; -fx-background-radius: 14; -fx-border-radius: 14; -fx-cursor: hand; -fx-min-width: 220;" />
       </VBox>
+      </ScrollPane>
    </left>
 
    <center>
-      <VBox alignment="CENTER" spacing="18">
-         <Label text="Welcome to DataBrew System" styleClass="dashboard-welcome" />
-         <Label text="Select an option from the sidebar to begin." styleClass="dashboard-subtext" />
+      <VBox fx:id="welcomePane" spacing="20">
+         <padding><Insets top="24" right="24" bottom="24" left="24" /></padding>
+
+         <!-- Hero row -->
+         <Label text="Dashboard Overview" style="-fx-font-size: 30px; -fx-font-weight: 900; -fx-text-fill: #1e293b; -fx-font-family: 'Pacifico', 'Segoe Script', cursive;" />
+
+         <!-- Metric cards -->
+         <HBox spacing="18" alignment="CENTER_LEFT">
+            <VBox alignment="CENTER" spacing="4" style="-fx-background-color: linear-gradient(to bottom right, #ecfdf5, #d1fae5); -fx-padding: 22 32; -fx-background-radius: 16; -fx-border-color: #a7f3d0; -fx-border-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.2, 0, 4);" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+               <Label fx:id="metricRevenue" text="\$0.00" style="-fx-font-size: 30px; -fx-font-weight: 900; -fx-text-fill: #059669;" />
+               <Label text="Today's Revenue" style="-fx-font-size: 13px; -fx-text-fill: #6b7280; -fx-font-weight: 600;" />
+            </VBox>
+            <VBox alignment="CENTER" spacing="4" style="-fx-background-color: linear-gradient(to bottom right, #eff6ff, #dbeafe); -fx-padding: 22 32; -fx-background-radius: 16; -fx-border-color: #bfdbfe; -fx-border-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.2, 0, 4);" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+               <Label fx:id="metricOrders" text="0" style="-fx-font-size: 30px; -fx-font-weight: 900; -fx-text-fill: #2563eb;" />
+               <Label text="Today's Orders" style="-fx-font-size: 13px; -fx-text-fill: #6b7280; -fx-font-weight: 600;" />
+            </VBox>
+            <VBox alignment="CENTER" spacing="4" style="-fx-background-color: linear-gradient(to bottom right, #fef3c7, #fde68a); -fx-padding: 22 32; -fx-background-radius: 16; -fx-border-color: #fcd34d; -fx-border-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.2, 0, 4);" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+               <Label fx:id="metricPending" text="0" style="-fx-font-size: 30px; -fx-font-weight: 900; -fx-text-fill: #d97706;" />
+               <Label text="Pending Orders" style="-fx-font-size: 13px; -fx-text-fill: #6b7280; -fx-font-weight: 600;" />
+            </VBox>
+            <VBox alignment="CENTER" spacing="4" style="-fx-background-color: linear-gradient(to bottom right, #fce7f3, #fbcfe8); -fx-padding: 22 32; -fx-background-radius: 16; -fx-border-color: #f9a8d4; -fx-border-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.2, 0, 4);" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+               <Label fx:id="metricMenuItems" text="0" style="-fx-font-size: 30px; -fx-font-weight: 900; -fx-text-fill: #db2777;" />
+               <Label text="Active Menu Items" style="-fx-font-size: 13px; -fx-text-fill: #6b7280; -fx-font-weight: 600;" />
+            </VBox>
+         </HBox>
+
+         <!-- Two-column: Top Sellers + Low Stock Alerts -->
+         <HBox spacing="18" VBox.vgrow="ALWAYS">
+            <!-- Top Sellers -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-padding: 16; -fx-background-radius: 14; -fx-border-color: #e5e7eb; -fx-border-radius: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0.15, 0, 3);">
+               <Label text="Top Selling Items" style="-fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #1e293b;" />
+               <TableView fx:id="topSellersTable" VBox.vgrow="ALWAYS" fixedCellSize="38.0" styleClass="menu-table" prefHeight="200">
+                  <columns>
+                     <TableColumn fx:id="tsNameCol" text="Item" prefWidth="200" />
+                     <TableColumn fx:id="tsQtyCol" text="Qty Sold" prefWidth="90" />
+                     <TableColumn fx:id="tsRevenueCol" text="Revenue" prefWidth="110" />
+                  </columns>
+                  <placeholder><Label text="No sales data" /></placeholder>
+               </TableView>
+            </VBox>
+
+            <!-- Low Stock Alerts -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-padding: 16; -fx-background-radius: 14; -fx-border-color: #e5e7eb; -fx-border-radius: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0.15, 0, 3);">
+               <Label text="Low Stock Alerts" style="-fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #dc2626;" />
+               <TableView fx:id="lowStockTable" VBox.vgrow="ALWAYS" fixedCellSize="38.0" styleClass="menu-table" prefHeight="200">
+                  <columns>
+                     <TableColumn fx:id="lsNameCol" text="Ingredient" prefWidth="180" />
+                     <TableColumn fx:id="lsQtyCol" text="Quantity" prefWidth="90" />
+                     <TableColumn fx:id="lsMinCol" text="Min Threshold" prefWidth="110" />
+                     <TableColumn fx:id="lsStatusCol" text="Status" prefWidth="80" />
+                  </columns>
+                  <placeholder><Label text="All stock levels OK" /></placeholder>
+               </TableView>
+            </VBox>
+         </HBox>
+
+         <!-- Recent Orders -->
+         <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 16; -fx-background-radius: 14; -fx-border-color: #e5e7eb; -fx-border-radius: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0.15, 0, 3);">
+            <Label text="Recent Orders" style="-fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #1e293b;" />
+            <TableView fx:id="recentOrdersTable" prefHeight="180" fixedCellSize="38.0" styleClass="menu-table">
+               <columns>
+                  <TableColumn fx:id="roIdCol" text="ID" prefWidth="60" />
+                  <TableColumn fx:id="roCustomerCol" text="Customer" prefWidth="150" />
+                  <TableColumn fx:id="roTotalCol" text="Total" prefWidth="100" />
+                  <TableColumn fx:id="roStatusCol" text="Status" prefWidth="100" />
+                  <TableColumn fx:id="roDateCol" text="Date" prefWidth="160" />
+               </columns>
+               <placeholder><Label text="No recent orders" /></placeholder>
+            </TableView>
+         </VBox>
       </VBox>
    </center>
 

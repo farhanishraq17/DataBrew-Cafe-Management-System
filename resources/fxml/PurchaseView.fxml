@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.databrew.cafe.controller.PurchaseController">
+  <center>
+    <SplitPane dividerPositions="0.62">
+      <VBox spacing="12" SplitPane.resizableWithParent="true">
+        <padding><Insets top="16" right="16" bottom="16" left="16" /></padding>
+        <Label text="Purchases / Procurement" styleClass="section-title" />
+        <TableView fx:id="purchaseTable" VBox.vgrow="ALWAYS" fixedCellSize="44.0" styleClass="menu-table">
+          <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="60" />
+            <TableColumn fx:id="colSupplier" text="Supplier" prefWidth="150" />
+            <TableColumn fx:id="colIngredient" text="Ingredient" prefWidth="150" />
+            <TableColumn fx:id="colQty" text="Quantity" prefWidth="100" />
+            <TableColumn fx:id="colCost" text="Cost" prefWidth="100" />
+            <TableColumn fx:id="colDate" text="Purchase Date" prefWidth="160" />
+          </columns>
+          <placeholder><Label text="No purchases recorded" /></placeholder>
+        </TableView>
+      </VBox>
+
+      <VBox spacing="14" style="-fx-background-color: white; -fx-padding: 16; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.2, 0, 4);">
+        <Label text="Record Purchase" styleClass="section-title" />
+        <GridPane hgap="14" vgap="14">
+          <columnConstraints>
+            <ColumnConstraints percentWidth="35" />
+            <ColumnConstraints percentWidth="65" />
+          </columnConstraints>
+          <Label text="Supplier" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="form-label" />
+          <ComboBox fx:id="supplierCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="form-control" maxWidth="Infinity" promptText="Select supplier" />
+          <Label text="Ingredient" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="form-label" />
+          <ComboBox fx:id="ingredientCombo" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="form-control" maxWidth="Infinity" promptText="Select ingredient" />
+          <Label text="Quantity" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="form-label" />
+          <TextField fx:id="qtyField" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="form-control" promptText="Amount purchased" />
+          <Label text="Cost" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="form-label" />
+          <TextField fx:id="costField" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="form-control" promptText="Total cost" />
+        </GridPane>
+        <Region VBox.vgrow="ALWAYS" />
+        <HBox spacing="10" alignment="CENTER" styleClass="actions-bar">
+          <Button text="Clear" onAction="#onClear" styleClass="btn-clear-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+          <Button text="Add" onAction="#onSave" styleClass="btn-primary-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+          <Button text="Update" onAction="#onUpdatePurchase" styleClass="btn-primary-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: linear-gradient(to right, #f59e0b, #d97706);" />
+          <Button text="Remove" onAction="#onDelete" styleClass="btn-danger-strong" prefHeight="50" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+        </HBox>
+      </VBox>
+    </SplitPane>
+  </center>
+</BorderPane>

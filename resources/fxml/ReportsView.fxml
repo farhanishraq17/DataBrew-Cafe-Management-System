@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.databrew.cafe.controller.ReportsController">
+  <center>
+    <VBox spacing="14">
+      <padding><Insets top="16" right="16" bottom="16" left="16" /></padding>
+      <Label text="Reports &amp; Analytics" styleClass="section-title" />
+
+      <!-- Controls bar -->
+      <HBox spacing="12" alignment="CENTER_LEFT">
+        <Label text="From:" styleClass="form-label" />
+        <DatePicker fx:id="fromDate" styleClass="form-control" prefWidth="155" />
+        <Label text="To:" styleClass="form-label" />
+        <DatePicker fx:id="toDate" styleClass="form-control" prefWidth="155" />
+        <Button text="Daily Sales" onAction="#onDailySales" styleClass="btn-primary-strong" prefHeight="40" />
+        <Button text="Monthly Summary" onAction="#onMonthlySummary" styleClass="btn-primary-strong" prefHeight="40" />
+        <Button text="Revenue by Category" onAction="#onRevenueByCategory" styleClass="btn-primary-strong" prefHeight="40" />
+        <Button text="Payment Breakdown" onAction="#onPaymentBreakdown" styleClass="btn-primary-strong" prefHeight="40" />
+        <Button text="Top Sellers" onAction="#onTopSellers" styleClass="btn-primary-strong" prefHeight="40" />
+        <Button text="Supplier Summary" onAction="#onSupplierSummary" styleClass="btn-primary-strong" prefHeight="40" />
+      </HBox>
+
+      <!-- Report title -->
+      <Label fx:id="reportTitle" text="Select a report above" style="-fx-font-size: 22px; -fx-font-weight: 800; -fx-text-fill: #1e40af;" />
+
+      <!-- Summary cards row -->
+      <HBox fx:id="summaryBar" spacing="16" alignment="CENTER_LEFT" visible="false" managed="false">
+        <VBox alignment="CENTER" spacing="2" style="-fx-background-color: #ecfdf5; -fx-padding: 14 24; -fx-background-radius: 10; -fx-border-color: #a7f3d0; -fx-border-radius: 10;">
+          <Label fx:id="summaryLabel1" text="" style="-fx-font-size: 26px; -fx-font-weight: 900; -fx-text-fill: #059669;" />
+          <Label fx:id="summaryCaption1" text="" style="-fx-font-size: 12px; -fx-text-fill: #6b7280;" />
+        </VBox>
+        <VBox alignment="CENTER" spacing="2" style="-fx-background-color: #eff6ff; -fx-padding: 14 24; -fx-background-radius: 10; -fx-border-color: #bfdbfe; -fx-border-radius: 10;">
+          <Label fx:id="summaryLabel2" text="" style="-fx-font-size: 26px; -fx-font-weight: 900; -fx-text-fill: #2563eb;" />
+          <Label fx:id="summaryCaption2" text="" style="-fx-font-size: 12px; -fx-text-fill: #6b7280;" />
+        </VBox>
+        <VBox alignment="CENTER" spacing="2" style="-fx-background-color: #fef3c7; -fx-padding: 14 24; -fx-background-radius: 10; -fx-border-color: #fde68a; -fx-border-radius: 10;">
+          <Label fx:id="summaryLabel3" text="" style="-fx-font-size: 26px; -fx-font-weight: 900; -fx-text-fill: #d97706;" />
+          <Label fx:id="summaryCaption3" text="" style="-fx-font-size: 12px; -fx-text-fill: #6b7280;" />
+        </VBox>
+        <VBox alignment="CENTER" spacing="2" style="-fx-background-color: #fce7f3; -fx-padding: 14 24; -fx-background-radius: 10; -fx-border-color: #f9a8d4; -fx-border-radius: 10;">
+          <Label fx:id="summaryLabel4" text="" style="-fx-font-size: 26px; -fx-font-weight: 900; -fx-text-fill: #db2777;" />
+          <Label fx:id="summaryCaption4" text="" style="-fx-font-size: 12px; -fx-text-fill: #6b7280;" />
+        </VBox>
+      </HBox>
+
+      <!-- Dynamic report table -->
+      <TableView fx:id="reportTable" VBox.vgrow="ALWAYS" fixedCellSize="44.0" styleClass="menu-table">
+        <placeholder><Label text="Run a report to see data" /></placeholder>
+      </TableView>
+    </VBox>
+  </center>
+</BorderPane>

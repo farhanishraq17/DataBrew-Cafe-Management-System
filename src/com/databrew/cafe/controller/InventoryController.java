@@ -119,7 +119,9 @@ public class InventoryController {
         }
     }
 
+    @FXML
     private void onAdd() {
+        inventoryTable.getSelectionModel().clearSelection();
         String name = nameField.getText();
         String unit = unitField.getText();
         if (name == null || name.isBlank() || unit == null || unit.isBlank()) {
@@ -137,6 +139,16 @@ public class InventoryController {
         } catch (SQLException e) {
             showError("Add failed: " + e.getMessage());
         }
+    }
+
+    @FXML
+    private void onUpdateAction() {
+        InventoryItem sel = inventoryTable.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            showError("Select an item to update.");
+            return;
+        }
+        onUpdate(sel);
     }
 
     private void onUpdate(InventoryItem sel) {

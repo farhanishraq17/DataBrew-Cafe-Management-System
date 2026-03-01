@@ -13,37 +13,51 @@
       </padding>
 
       <!-- Left panel: Menu browser -->
-      <VBox spacing="15" HBox.hgrow="ALWAYS">
+      <VBox spacing="12" HBox.hgrow="ALWAYS">
         <Label text="Menu" styleClass="section-title pos-title" alignment="CENTER" maxWidth="Infinity" style="-fx-font-size: 48px;" />
-        <TextField fx:id="searchField" promptText="Search menu items" styleClass="pos-search" />
+
+        <!-- Category filter row -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+          <Label text="Category:" styleClass="pos-form-label" />
+          <ComboBox fx:id="categoryCombo" styleClass="pos-form-field" prefWidth="200" promptText="All Categories" />
+          <Pane HBox.hgrow="ALWAYS" />
+          <TextField fx:id="searchField" promptText="Search menu items" styleClass="pos-search" prefWidth="260" />
+        </HBox>
+
         <TableView fx:id="menuTable" VBox.vgrow="ALWAYS" styleClass="pos-table">
           <columns>
             <TableColumn fx:id="menuNameCol" text="Name" prefWidth="200" />
             <TableColumn fx:id="menuPriceCol" text="Price" prefWidth="100" />
-            <TableColumn fx:id="menuCategoryCol" text="Type" prefWidth="140" />
+            <TableColumn fx:id="menuCategoryCol" text="Category" prefWidth="140" />
           </columns>
         </TableView>
         <Button text="Add to Cart" onAction="#onAdd" styleClass="primary-btn" maxWidth="Infinity" />
       </VBox>
 
       <!-- Right panel: Cart and checkout -->
-      <VBox spacing="15" prefWidth="420">
+      <VBox spacing="12" prefWidth="460">
         <Label text="Current Order" styleClass="section-title" />
 
-        <GridPane hgap="12" vgap="12" styleClass="pos-form-card">
+        <GridPane hgap="12" vgap="10" styleClass="pos-form-card">
           <columnConstraints>
-            <ColumnConstraints percentWidth="40" />
-            <ColumnConstraints percentWidth="60" />
+            <ColumnConstraints percentWidth="38" />
+            <ColumnConstraints percentWidth="62" />
           </columnConstraints>
-          <rowConstraints>
-            <RowConstraints minHeight="30" />
-            <RowConstraints minHeight="30" />
-          </rowConstraints>
+
           <Label text="Customer Name" styleClass="pos-form-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
           <TextField fx:id="customerField" promptText="Customer" styleClass="pos-form-field" GridPane.rowIndex="0" GridPane.columnIndex="1" />
 
-          <Label text="Payment Method" styleClass="pos-form-label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-          <ComboBox fx:id="methodCombo" styleClass="pos-form-field" GridPane.rowIndex="1" GridPane.columnIndex="1">
+          <Label text="Customer Type" styleClass="pos-form-label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+          <ComboBox fx:id="customerTypeCombo" styleClass="pos-form-field" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity" />
+
+          <Label text="Discount" styleClass="pos-form-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+          <ComboBox fx:id="discountCombo" styleClass="pos-form-field" GridPane.rowIndex="2" GridPane.columnIndex="1" maxWidth="Infinity" promptText="No Discount" />
+
+          <Label text="Tax" styleClass="pos-form-label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+          <ComboBox fx:id="taxCombo" styleClass="pos-form-field" GridPane.rowIndex="3" GridPane.columnIndex="1" maxWidth="Infinity" promptText="No Tax" />
+
+          <Label text="Payment Method" styleClass="pos-form-label" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+          <ComboBox fx:id="methodCombo" styleClass="pos-form-field" GridPane.rowIndex="4" GridPane.columnIndex="1" maxWidth="Infinity">
             <items>
               <FXCollections fx:factory="observableArrayList">
                 <String fx:value="CASH" />
@@ -56,20 +70,52 @@
 
         <TableView fx:id="cartTable" VBox.vgrow="ALWAYS" styleClass="pos-table">
           <columns>
-            <TableColumn fx:id="cartItemCol" text="Item" prefWidth="180" />
-            <TableColumn fx:id="cartQtyCol" text="Qty" prefWidth="80" />
-            <TableColumn fx:id="cartTotalCol" text="Total" prefWidth="120" />
+            <TableColumn fx:id="cartItemCol" text="Item" prefWidth="150" />
+            <TableColumn fx:id="cartQtyCol" text="Qty" prefWidth="55" />
+            <TableColumn fx:id="cartPriceCol" text="Price" prefWidth="75" />
+            <TableColumn fx:id="cartTotalCol" text="Total" prefWidth="80" />
+            <TableColumn fx:id="cartActionsCol" text="" prefWidth="70" />
           </columns>
           <placeholder>
             <Label text="Cart is Empty" style="-fx-font-size: 18px; -fx-text-fill: #95a5a6;" />
           </placeholder>
         </TableView>
 
-        <VBox spacing="10">
-          <Label text="Total" styleClass="section-title" />
-          <Label fx:id="totalLabel" text="0.00" style="-fx-font-size: 24px; -fx-font-weight: 800; -fx-text-fill: #10b981;" />
-          <Button text="Checkout" onAction="#onCheckout" maxWidth="Infinity" style="-fx-background-color: linear-gradient(to right, #22c55e, #16a34a); -fx-text-fill: white; -fx-padding: 16 20; -fx-background-radius: 12; -fx-font-size: 17px; -fx-font-weight: 800;" />
+        <!-- Cart action buttons -->
+        <HBox spacing="10" alignment="CENTER">
+          <Button text="+ Qty" onAction="#onIncreaseQty" styleClass="btn-primary-strong" prefHeight="36" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+          <Button text="- Qty" onAction="#onDecreaseQty" styleClass="btn-clear-strong" prefHeight="36" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+          <Button text="Remove" onAction="#onRemoveItem" styleClass="btn-danger-strong" prefHeight="36" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+          <Button text="Clear Cart" onAction="#onClearCart" styleClass="btn-clear-strong" prefHeight="36" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+        </HBox>
+
+        <!-- Totals -->
+        <VBox spacing="6" style="-fx-background-color: linear-gradient(to right, #f0fdf4, #ecfdf5); -fx-padding: 14; -fx-background-radius: 12; -fx-border-color: #a7f3d0; -fx-border-radius: 12;">
+          <HBox spacing="10">
+            <Label text="Subtotal:" style="-fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #374151;" />
+            <Pane HBox.hgrow="ALWAYS" />
+            <Label fx:id="subtotalLabel" text="\$0.00" style="-fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #374151;" />
+          </HBox>
+          <HBox spacing="10">
+            <Label text="Discount:" style="-fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #dc2626;" />
+            <Pane HBox.hgrow="ALWAYS" />
+            <Label fx:id="discountLabel" text="-\$0.00" style="-fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #dc2626;" />
+          </HBox>
+          <HBox spacing="10">
+            <Label text="Tax:" style="-fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #2563eb;" />
+            <Pane HBox.hgrow="ALWAYS" />
+            <Label fx:id="taxLabel" text="+\$0.00" style="-fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #2563eb;" />
+          </HBox>
+          <Separator />
+          <HBox spacing="10">
+            <Label text="TOTAL:" style="-fx-font-size: 22px; -fx-font-weight: 900; -fx-text-fill: #059669;" />
+            <Pane HBox.hgrow="ALWAYS" />
+            <Label fx:id="totalLabel" text="\$0.00" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: #059669;" />
+          </HBox>
         </VBox>
+
+        <Button text="Checkout" onAction="#onCheckout" maxWidth="Infinity"
+           style="-fx-background-color: linear-gradient(to right, #22c55e, #16a34a); -fx-text-fill: white; -fx-padding: 16 20; -fx-background-radius: 12; -fx-font-size: 17px; -fx-font-weight: 800;" />
       </VBox>
 
     </HBox>

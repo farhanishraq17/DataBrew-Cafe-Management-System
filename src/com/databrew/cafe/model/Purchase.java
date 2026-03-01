@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 public class Purchase {
     private long id;
     private long supplierId;
+    private String supplierName;
     private long ingredientId;
+    private String ingredientName;
     private double quantity;
     private double cost;
     private LocalDateTime purchasedAt;
@@ -26,12 +28,28 @@ public class Purchase {
         this.supplierId = supplierId;
     }
 
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
     public long getIngredientId() {
         return ingredientId;
     }
 
     public void setIngredientId(long ingredientId) {
         this.ingredientId = ingredientId;
+    }
+
+    public String getIngredientName() {
+        return ingredientName;
+    }
+
+    public void setIngredientName(String ingredientName) {
+        this.ingredientName = ingredientName;
     }
 
     public double getQuantity() {

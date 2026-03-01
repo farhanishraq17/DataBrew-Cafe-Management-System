@@ -3,11 +3,8 @@ package com.databrew.cafe.dao;
 import com.databrew.cafe.model.Attendance;
 import com.databrew.cafe.util.DBConnection;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,15 +17,43 @@ public class AttendanceDao {
             ps.setLong(1, employeeId);
             try (ResultSet rs = ps.executeQuery()) {
                 List<Attendance> list = new ArrayList<>();
-                while (rs.next()) {
+                while (rs.next())
                     list.add(map(rs));
-                }
                 return list;
             }
         }
     }
 
-    public void upsertAssignment(long employeeId, long shiftId, java.time.LocalDate workDate) throws SQLException {
+    public List<Attendance> findAll() throws SQLException {
+        String sql = "SELECT a.id, a.employee_id, a.shift_id, a.work_date, a.check_in, a.check_out, a.status " +
+                "FROM attendance a ORDER BY a.work_date DESC, a.check_in DESC LIMIT 500";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+            List<Attendance> list = new ArrayList<>();
+            while (rs.next())
+                list.add(map(rs));
+            return list;
+        }
+    }
+
+    public List<Attendance> findByDateRange(LocalDate from, LocalDate to) throws SQLException {
+        String sql = "SELECT a.id, a.employee_id, a.shift_id, a.work_date, a.check_in, a.check_out, a.status " +
+                "FROM attendance a WHERE a.work_date BETWEEN ? AND ? ORDER BY a.work_date DESC LIMIT 500";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setDate(1, Date.valueOf(from));
+            ps.setDate(2, Date.valueOf(to));
+            try (ResultSet rs = ps.executeQuery()) {
+                List<Attendance> list = new ArrayList<>();
+                while (rs.next())
+                    list.add(map(rs));
+                return list;
+            }
+        }
+    }
+
+    public void upsertAssignment(long employeeId, long shiftId, LocalDate workDate) throws SQLException {
         String sql = "INSERT INTO attendance (employee_id, shift_id, work_date, status) VALUES (?,?,?, 'PRESENT') " +
                 "ON DUPLICATE KEY UPDATE shift_id=VALUES(shift_id)";
         try (Connection conn = DBConnection.getConnection();
@@ -36,6 +61,43 @@ public class AttendanceDao {
             ps.setLong(1, employeeId);
             ps.setLong(2, shiftId);
             ps.setDate(3, Date.valueOf(workDate));
+            ps.executeUpdate();
+        }
+    }
+
+    public void checkIn(long attendanceId) throws SQLException {
+        String sql = "UPDATE attendance SET check_in = NOW() WHERE id=?";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, attendanceId);
+            ps.executeUpdate();
+        }
+    }
+
+    public void checkOut(long attendanceId) throws SQLException {
+        String sql = "UPDATE attendance SET check_out = NOW() WHERE id=?";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, attendanceId);
+            ps.executeUpdate();
+        }
+    }
+
+    public void updateStatus(long attendanceId, String status) throws SQLException {
+        String sql = "UPDATE attendance SET status=? WHERE id=?";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setLong(2, attendanceId);
+            ps.executeUpdate();
+        }
+    }
+
+    public void delete(long id) throws SQLException {
+        String sql = "DELETE FROM attendance WHERE id=?";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, id);
             ps.executeUpdate();
         }
     }

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.databrew.cafe.controller.ShiftManagementController">
+  <center>
+    <VBox spacing="16">
+      <padding><Insets top="16" right="16" bottom="16" left="16" /></padding>
+
+      <!-- ====== Shifts Section ====== -->
+      <Label text="Shift Management" styleClass="section-title" />
+      <SplitPane dividerPositions="0.58" VBox.vgrow="SOMETIMES" prefHeight="280">
+        <!-- Shift Table -->
+        <VBox spacing="10">
+          <TableView fx:id="shiftTable" VBox.vgrow="ALWAYS" fixedCellSize="44.0" styleClass="menu-table">
+            <columns>
+              <TableColumn fx:id="shColId" text="ID" prefWidth="50" />
+              <TableColumn fx:id="shColName" text="Shift Name" prefWidth="160" />
+              <TableColumn fx:id="shColStart" text="Start Time" prefWidth="120" />
+              <TableColumn fx:id="shColEnd" text="End Time" prefWidth="120" />
+            </columns>
+            <placeholder><Label text="No shifts defined" /></placeholder>
+          </TableView>
+        </VBox>
+
+        <!-- Shift Form -->
+        <VBox spacing="14" style="-fx-background-color: white; -fx-padding: 16; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.2, 0, 4);">
+          <Label text="Shift Details" styleClass="section-title" />
+          <GridPane hgap="14" vgap="14">
+            <columnConstraints>
+              <ColumnConstraints percentWidth="35" />
+              <ColumnConstraints percentWidth="65" />
+            </columnConstraints>
+            <Label text="Name" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="form-label" />
+            <TextField fx:id="shiftNameField" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="form-control" promptText="e.g. Morning Shift" />
+
+            <Label text="Start Time" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="form-label" />
+            <TextField fx:id="shiftStartField" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="form-control" promptText="HH:mm:ss e.g. 06:00:00" />
+
+            <Label text="End Time" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="form-label" />
+            <TextField fx:id="shiftEndField" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="form-control" promptText="HH:mm:ss e.g. 14:00:00" />
+          </GridPane>
+          <Region VBox.vgrow="ALWAYS" />
+          <HBox spacing="10" alignment="CENTER" styleClass="actions-bar">
+            <Button text="Clear" onAction="#onClearShift" styleClass="btn-clear-strong" prefHeight="44" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+            <Button text="Add" onAction="#onAddShift" styleClass="btn-primary-strong" prefHeight="44" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+            <Button text="Update" onAction="#onUpdateShift" styleClass="btn-primary-strong" prefHeight="44" maxWidth="Infinity" HBox.hgrow="ALWAYS" style="-fx-background-color: linear-gradient(to right, #f59e0b, #d97706);" />
+            <Button text="Remove" onAction="#onDeleteShift" styleClass="btn-danger-strong" prefHeight="44" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+          </HBox>
+        </VBox>
+      </SplitPane>
+
+      <!-- ====== Attendance Section ====== -->
+      <Separator />
+      <Label text="Attendance Tracking" styleClass="section-title" />
+
+      <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Employee:" styleClass="form-label" />
+        <ComboBox fx:id="empCombo" prefWidth="200" promptText="Select employee" />
+        <Label text="Shift:" styleClass="form-label" />
+        <ComboBox fx:id="attShiftCombo" prefWidth="160" promptText="Select shift" />
+        <Label text="Date:" styleClass="form-label" />
+        <DatePicker fx:id="attDatePicker" prefWidth="150" />
+        <Button text="Assign" onAction="#onAssignAttendance" styleClass="btn-primary-strong" prefHeight="36" />
+      </HBox>
+
+      <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Filter:" styleClass="form-label" />
+        <DatePicker fx:id="attFromDate" promptText="From" prefWidth="140" />
+        <DatePicker fx:id="attToDate" promptText="To" prefWidth="140" />
+        <Button text="Filter" onAction="#onFilterAttendance" styleClass="btn-primary-strong" prefHeight="36" />
+        <Button text="Show All" onAction="#onShowAllAttendance" styleClass="btn-clear-strong" prefHeight="36" />
+      </HBox>
+
+      <TableView fx:id="attTable" VBox.vgrow="ALWAYS" fixedCellSize="44.0" styleClass="menu-table">
+        <columns>
+          <TableColumn fx:id="attColId" text="ID" prefWidth="50" />
+          <TableColumn fx:id="attColEmployee" text="Employee" prefWidth="160" />
+          <TableColumn fx:id="attColShift" text="Shift" prefWidth="130" />
+          <TableColumn fx:id="attColDate" text="Date" prefWidth="110" />
+          <TableColumn fx:id="attColCheckIn" text="Check In" prefWidth="150" />
+          <TableColumn fx:id="attColCheckOut" text="Check Out" prefWidth="150" />
+          <TableColumn fx:id="attColStatus" text="Status" prefWidth="100" />
+        </columns>
+        <placeholder><Label text="No attendance records" /></placeholder>
+      </TableView>
+
+      <HBox spacing="10" alignment="CENTER">
+        <Button text="Check In" onAction="#onCheckIn" styleClass="btn-primary-strong" prefHeight="44" prefWidth="150" />
+        <Button text="Check Out" onAction="#onCheckOut" styleClass="btn-primary-strong" prefHeight="44" prefWidth="150"
+                style="-fx-background-color: linear-gradient(to right, #f59e0b, #d97706);" />
+        <Button text="Mark Absent" onAction="#onMarkAbsent" styleClass="btn-danger-strong" prefHeight="44" prefWidth="150" />
+        <Button text="Delete Record" onAction="#onDeleteAttendance" styleClass="btn-danger-strong" prefHeight="44" prefWidth="150" />
+      </HBox>
+    </VBox>
+  </center>
+</BorderPane>

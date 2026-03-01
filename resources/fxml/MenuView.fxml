@@ -103,7 +103,7 @@
                             HBox.hgrow="ALWAYS" maxWidth="Infinity" />
                     <Button fx:id="updateItemButton" text="Update Item" onAction="#handleUpdateItem" styleClass="btn-primary" prefHeight="45"
                             visible="false" managed="false" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
-                    <Button text="Delete Item" onAction="#handleDelete" styleClass="btn-danger" prefHeight="45"
+                    <Button text="Remove Item" onAction="#handleDelete" styleClass="btn-danger" prefHeight="45"
                             HBox.hgrow="ALWAYS" maxWidth="Infinity" />
                 </HBox>
             </VBox>
